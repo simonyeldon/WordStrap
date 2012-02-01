@@ -1,5 +1,6 @@
 <?php
-require_once "walker.class.php";
+require_once "lib/walker.class.php";
+require_once "lib/settings.php";
 
 function wordstrap_register_menus() {
 	register_nav_menus(
