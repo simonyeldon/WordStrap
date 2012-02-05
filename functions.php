@@ -14,8 +14,14 @@ add_action( 'init', 'wordstrap_register_menus' );
 function wordstrap_body_classes( $classes ) {
 	global $wp_query;
 
+	$wordstrap_options = get_option( 'theme_wordstrap_options' );
+
 	if( is_page() ) {
 		$classes[] = "page-slug-{$wp_query->post->post_name}";
+	}
+
+	if( "top" === $wordstrap_options['header_nav_position'] ) {
+		$classes[] = "fixed-nav-bar";
 	}
 
 	return $classes;

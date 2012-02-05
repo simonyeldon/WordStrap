@@ -1,3 +1,4 @@
+<?php $wordstrap_options = get_option( 'theme_wordstrap_options' ); ?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -25,6 +26,35 @@
 
 			<header>
 
+				<?php if ( "top" === $wordstrap_options['header_nav_position']) :	?>
+				<nav id="primary-menu">
+					<div class="navbar navbar-fixed-top">
+						<div class="navbar-inner">
+							<div class="container">
+								<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+								</a>
+								<div class="nav-collapse"> 
+									<?php 
+									wp_nav_menu( 
+										array(
+											'theme_location' => 'primary', 
+											'container' => false, 
+											'menu_class' => 'nav',
+											'walker' => new Wordstrap_Menu_Walker()
+										) 
+									);  
+									get_search_form();
+									?>
+								</div> 
+							</div>
+						</div>
+					</div>
+				</nav>
+				<?php endif; ?>
+
 				<div class="container">
 
 					<div class="row" id="branding">
@@ -34,14 +64,15 @@
 								<h1 id="site-title"><a href="<?php bloginfo('url'); ?>">
 									<span><?php bloginfo('blog_title'); ?></span>
 								</a></h1>
-								<h2 id="site-description">
+								<p id="site-description">
 									<?php bloginfo('description'); ?>
-								</h2>
+								</p>
 							</hgroup>
 						</div>
 			
 					</div> <!-- /branding -->
 
+					<?php if ( "fixed" === $wordstrap_options['header_nav_position']) :	?>
 					<nav id="primary-menu">
 						<div class="navbar navbar-static">
 							<div class="navbar-inner">
@@ -68,6 +99,7 @@
 							</div>
 						</div>
 					</nav> 
+					<?php endif; ?>
 
 				</div> <!-- /.container -->
 

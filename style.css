@@ -5,3 +5,11 @@ Description: A theme for WordPress that uses the excellent work from twitter tha
 Author: Simon Yeldon
 Author URI: http://ghosty.co.uk
 */
+
+body.fixed-nav-bar {
+	padding-top: 60px;
+}
+
+body.admin-bar .navbar-fixed-top {
+	top: 28px;
+}
