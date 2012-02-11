@@ -13,7 +13,9 @@
 		<![endif]-->
 
 		<link rel="stylesheet/less" href="<?php bloginfo('template_directory'); ?>/bootstrap/less/bootstrap.less">
+		<?php if($wordstrap_options['responsive']): ?>
 		<link rel="stylesheet/less" href="<?php bloginfo('template_directory'); ?>/bootstrap/less/responsive.less">
+		<?php endif; ?>
 		<link rel="stylesheet/less" href="<?php bloginfo('template_directory'); ?>/less/style.less">
 		<link rel="stylesheet" type="text/css" href="<?php bloginfo('stylesheet_url'); ?>">
 
@@ -26,29 +28,42 @@
 
 			<header>
 
-				<?php if ( "top" === $wordstrap_options['header_nav_position']) :	?>
+				<?php if ( "fixed" === $wordstrap_options['menu']['type']) :	?>
 				<nav id="primary-menu">
 					<div class="navbar navbar-fixed-top">
 						<div class="navbar-inner">
 							<div class="container">
+								<?php if($wordstrap_options['responsive']): ?>
 								<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</a>
+								<?php endif; ?>
+
+								<?php if($wordstrap_options['menu']['branding']): ?>
+								<a href="<?php bloginfo('url'); ?>" class="brand"><?php bloginfo('blog_title'); ?></a>
+								<?php endif; ?>
+								<?php if($wordstrap_options['responsive']): ?>
 								<div class="nav-collapse"> 
+								<?php endif; ?>
 									<?php 
 									wp_nav_menu( 
 										array(
 											'theme_location' => 'primary', 
 											'container' => false, 
 											'menu_class' => 'nav',
+											'depth' => $wordstrap_options['menu']['depth']+1,
 											'walker' => new Wordstrap_Menu_Walker()
 										) 
 									);  
-									get_search_form();
+									if($wordstrap_options['menu']['search']) {
+										get_search_form();	
+									}
 									?>
+								<?php if($wordstrap_options['responsive']): ?>
 								</div> 
+								<?php endif; ?>
 							</div>
 						</div>
 					</div>
@@ -57,9 +72,11 @@
 
 				<div class="container">
 
+					
 					<div class="row" id="branding">
 
 						<div class="span12">
+							<?php if(!$wordstrap_options['menu']['branding']): ?>
 							<hgroup>
 								<h1 id="site-title"><a href="<?php bloginfo('url'); ?>">
 									<span><?php bloginfo('blog_title'); ?></span>
@@ -68,33 +85,46 @@
 									<?php bloginfo('description'); ?>
 								</p>
 							</hgroup>
+							<?php endif; ?>
 						</div>
 			
 					</div> <!-- /branding -->
 
-					<?php if ( "fixed" === $wordstrap_options['header_nav_position']) :	?>
+					<?php if ( "static" === $wordstrap_options['menu']['type']) :	?>
 					<nav id="primary-menu">
 						<div class="navbar navbar-static">
 							<div class="navbar-inner">
 								<div class="container" style="width:auto;">
+								<?php if($wordstrap_options['responsive']): ?>
 									<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
 										<span class="icon-bar"></span>
 										<span class="icon-bar"></span>
 										<span class="icon-bar"></span>
 									</a>
-									<div class="nav-collapse"> 
+								<?php endif; ?>
+									<?php if( $wordstrap_options['menu']['branding']): ?>
+									<a href="<?php bloginfo('url'); ?>" class="brand"><?php bloginfo('blog_title'); ?></a>
+									<?php endif; ?>
+								<?php if($wordstrap_options['responsive']): ?>
+									<div class="nav-collapse">
+								<?php endif; ?> 
 										<?php 
 										wp_nav_menu( 
 											array(
 												'theme_location' => 'primary', 
 												'container' => false, 
 												'menu_class' => 'nav',
-												'walker' => new Wordstrap_Menu_Walker()
+												'walker' => new Wordstrap_Menu_Walker(),
+												'depth' => $wordstrap_options['menu']['depth']
 											) 
 										);  
-										get_search_form();
+										if($wordstrap_options['menu']['search']) {
+											get_search_form();	
+										}
 										?>
+								<?php if($wordstrap_options['responsive']): ?>
 									</div> 
+								<?php endif; ?>
 								</div>
 							</div>
 						</div>

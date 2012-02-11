@@ -48,6 +48,7 @@ function wordstrap_register_settings_general()
     add_settings_section('wordstrap_settings_genearl_footer', "Footer", "wordstrap_settings_general_footer_section_text", "wordstrap");   
 
     add_settings_field("wordstrap_setting_footer_text", "Footer text", "wordstrap_setting_footer_text", "wordstrap", "wordstrap_settings_genearl_footer");
+    add_settings_field("wordstrap_setting_general_responsive_text", "Responsive layout", "wordstrap_setting_general_responsive_text", "wordstrap", "wordstrap_settings_genearl_footer");
 }
 
 /*
@@ -57,7 +58,10 @@ function wordstrap_register_settings_menu()
 {
     add_settings_section('wordstrap_settings_menu', "Menu settings", "wordstrap_settings_menu_section_text", "wordstrap");
     
-    add_settings_field("wordstrap_setting_menu_position_text", "Menu type", "wordstrap_setting_menu_position_text", "wordstrap", "wordstrap_settings_menu"); 
+    add_settings_field("wordstrap_setting_menu_type_text", "Menu type", "wordstrap_setting_menu_type_text", "wordstrap", "wordstrap_settings_menu"); 
+    add_settings_field("wordstrap_setting_menu_branding_text", "Include blog name", "wordstrap_setting_menu_branding_text", "wordstrap", "wordstrap_settings_menu");
+    add_settings_field("wordstrap_setting_menu_search_text", "Show search box", "wordstrap_setting_menu_search_text", "wordstrap", "wordstrap_settings_menu");
+    add_settings_field("wordstrap_setting_menu_depth_text", "Enable dropdowns", "wordstrap_setting_menu_depth_text", "wordstrap", "wordstrap_settings_menu");
 }
 
 /*
@@ -93,6 +97,20 @@ function wordstrap_settings_javascript_section_text() { ?>
     <p><?php _e( 'Choose which javascript plugins that you want to enable' ); ?></p>
 <?php }
 
+/*=================================*
+ * GENERAL TAB FIELDS              *
+ *=================================*/
+
+/*
+ * navigation bar search box
+ */
+function wordstrap_setting_general_responsive_text() {
+    $wordstrap_options = get_option( 'theme_wordstrap_options' );
+    ?>
+    <input type="checkbox" value="1" name="theme_wordstrap_options[responsive]" <?php checked( 1, $wordstrap_options['responsive'] ); ?>>
+    <span class="description">If checked the theme will include the responvive layout components.</span>
+<?php }
+
 /*
  * Footer text field
  */
@@ -108,18 +126,59 @@ function wordstrap_setting_footer_text() {
      <span class="description">Enter the text you wish to appear in the footer of your site</span>
 <?php }
 
+
+/*=================================*
+ * MENU TAB FIELDS                 *
+ *=================================*/
+
 /*
- * menu position field
+ * menu type field
  */
-function wordstrap_setting_menu_position_text() {
+function wordstrap_setting_menu_type_text() {
     $wordstrap_options = get_option( 'theme_wordstrap_options' );
     ?>
-    <select name="theme_wordstrap_options[header_nav_position]">
-        <option <?php selected( "top" == $wordstrap_options['header_nav_position'] ); ?> value="top">top</option>
-        <option <?php selected( "fixed" == $wordstrap_options['header_nav_position'] ); ?> value="fixed">fixed</option>
+    <select name="theme_wordstrap_options[menu][type]">
+        <option <?php selected( "static" == $wordstrap_options['menu']['type'] ); ?> value="static">static</option>
+        <option <?php selected( "fixed" == $wordstrap_options['menu']['type'] ); ?> value="fixed">fixed</option>
     </select>
-    <span class="description">This allows you to change the location of the main navigation menu.</span>
+    <span class="description">This allows you to change the type of the main navigation menu.</span>
 <?php }
+
+/*
+ * navigation bar branding
+ */
+function wordstrap_setting_menu_branding_text() {
+    $wordstrap_options = get_option( 'theme_wordstrap_options' );
+    ?>
+    <input type="checkbox" value="1" name="theme_wordstrap_options[menu][branding]" <?php checked( 1, $wordstrap_options['menu']['branding'] ); ?>>
+    <span class="description">If checked the blog name will appear inside the navigation bar.</span>
+<?php }
+
+/*
+ * navigation bar search box
+ */
+function wordstrap_setting_menu_search_text() {
+    $wordstrap_options = get_option( 'theme_wordstrap_options' );
+    ?>
+    <input type="checkbox" value="1" name="theme_wordstrap_options[menu][search]" <?php checked( 1, $wordstrap_options['menu']['search'] ); ?>>
+    <span class="description">If checked a search box will appear inside the navigation bar.</span>
+<?php }
+
+/*
+ * navigation bar dropdowns
+ */
+function wordstrap_setting_menu_depth_text() {
+    $wordstrap_options = get_option( 'theme_wordstrap_options' );
+    ?>
+    <input type="checkbox" value="1" name="theme_wordstrap_options[menu][depth]" <?php checked( 1, $wordstrap_options['menu']['depth'] ); ?>>
+    <span class="description">Enable dropdowns in the navigation bar.</span>
+<?php }
+
+
+
+/*=================================*
+ * JAVASCRIPT TAB FIELDS           *
+ *=================================*/
 
 /*
  * javascript field
@@ -142,12 +201,20 @@ function wordstrap_options_validate($input) {
     $submit_javascript = (!empty( $input['submit-javascript'] ) ? true : false );
     
     if ($submit_general) {
-        $valid_input['footer_text'] = wp_kses_post($input['footer_text']);
+        $valid_input['responsive'] = ( $input['responsive'] ? "1" : "0" );
+        $valid_input['footer_text'] = wp_kses_post($input['footer_text']); //allow some HTML
     } elseif ($submit_menu) {
-        $valid_input['header_nav_position'] = ( "top" === $input['header_nav_position'] ? "top" : "fixed" );
+        $valid_input['menu']['type'] = ( "fixed" === $input['menu']['type'] ? "fixed" : "static" );
+        $valid_input['menu']['branding'] = ( "1" === $input['menu']['branding'] ? "1" : "0" );
+        $valid_input['menu']['search'] = ( $input['menu']['search'] ? "1" : "0" );
+        $valid_input['menu']['depth'] = ( $input['menu']['depth'] ? "1" : "0" );
     } elseif ($submit_javascript) {
-        foreach ($input['js'] as $file => $value) {
-            $valid_input['js'][$file] = ( "1" === $value ? "1" : "0" );
+        if( !empty($input['js']) ) {
+            foreach ($input['js'] as $file => $value) {
+                $valid_input['js'][$file] = ( "1" === $value ? "1" : "0" );
+            }
+        } else {
+            $valid_input['js'] = wordstrap_get_settings_javascript_files();
         }
     }
    
@@ -159,9 +226,15 @@ function wordstrap_options_validate($input) {
  */
 function wordstrap_get_default_options() {
     $options = array(
-        'header_nav_position' => 'fixed', 
-        'header_nav_menu_depth' => 1,
-        'footer_text' => "Theme created by Ghosty, styling by Bootsrap",
+        'menu' => array(
+            'type' => 'static',
+            'search' => 1,
+            'branding' => 0,
+            'location' => 'below',
+            'depth' => 1
+        ),
+        'footer_text' => 'Theme created by <a href="http://ghosty.co.uk">Ghosty</a>, styling by Bootsrap',
+        'responsive' => 1,
         'js' => wordstrap_get_settings_javascript_files()
     );
     return $options;
