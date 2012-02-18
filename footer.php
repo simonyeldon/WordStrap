@@ -21,7 +21,7 @@
 		<?php if ($wordstrap_options['js']['modal']) : ?>
 		    <script src="<?php bloginfo('template_directory'); ?>/bootstrap/js/bootstrap-modal.js"></script>
 		<?php endif; ?>
-		<?php if ($wordstrap_options['js']['dropdown']) : ?>
+		<?php if ($wordstrap_options['js']['dropdown'] || $wordstrap_options['menu']['depth']) : ?>
 		    <script src="<?php bloginfo('template_directory'); ?>/bootstrap/js/bootstrap-dropdown.js"></script>
 		<?php endif; ?>
 		<?php if ($wordstrap_options['js']['scrollspy']) : ?>
@@ -39,7 +39,7 @@
 		<?php if ($wordstrap_options['js']['button']) : ?>
 		    <script src="<?php bloginfo('template_directory'); ?>/bootstrap/js/bootstrap-button.js"></script>
 		<?php endif; ?>
-		<?php if ($wordstrap_options['js']['collapse']) : ?>
+		<?php if ($wordstrap_options['js']['collapse'] || $wordstrap_options['responsive']) : ?>
 		    <script src="<?php bloginfo('template_directory'); ?>/bootstrap/js/bootstrap-collapse.js"></script>
 		<?php endif; ?>
 		<?php if ($wordstrap_options['js']['carousel']) : ?>

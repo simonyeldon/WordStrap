@@ -20,7 +20,7 @@ function wordstrap_body_classes( $classes ) {
 		$classes[] = "page-slug-{$wp_query->post->post_name}";
 	}
 
-	if( "top" === $wordstrap_options['header_nav_position'] ) {
+	if( "fixed" === $wordstrap_options['menu']['type'] ) {
 		$classes[] = "fixed-nav-bar";
 	}
 

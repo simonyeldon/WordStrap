@@ -3,6 +3,7 @@
 class Wordstrap_Menu_Walker extends Walker_Nav_Menu {
 
 	function display_element( $element, &$children_elements, $max_depth, $depth=0, $args, &$output ) {
+		
 		if( !element ) {
 			return;
 		}
@@ -13,7 +14,7 @@ class Wordstrap_Menu_Walker extends Walker_Nav_Menu {
 			$args[0]['has_children'] = !empty($children_elements[$element->$id_field]);
 		}
 
-		if( !empty($children_elements[$element->$id_field]) ) {
+		if( !empty($children_elements[$element->$id_field]) && ($max_depth == 0 || $max_depth > $depth+1 ) ) {
 			array_push($element->classes, 'dropdown');
 		}
 
