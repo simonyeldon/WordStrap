@@ -1,14 +1,12 @@
 <article class="row">
 	
-	<header>
-		<div class="span12">
+	<div class="span12">
+		<header>
 			<h2><?php the_title(); ?></h2>
+		</header>
+		<div class="post-contents">
+			<?php the_content(); ?>
 		</div>
-	</header>
-
-	<div class="span12 post-contents">
-		<?php the_content(); ?>
 	</div>
-
 	
 </article>

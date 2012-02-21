@@ -19,7 +19,7 @@
 		<link rel="stylesheet/less" href="<?php bloginfo('template_directory'); ?>/less/style.less">
 		<link rel="stylesheet" type="text/css" href="<?php bloginfo('stylesheet_url'); ?>">
 
-		<script src="<?php bloginfo('template_directory'); ?>/js/less/less-1.1.5.js"></script>
+		<script src="<?php bloginfo('template_directory'); ?>/js/less/less.js"></script>
 		<?php wp_enqueue_script("jquery"); ?>
 		<?php wp_head(); ?>
 	</head>
