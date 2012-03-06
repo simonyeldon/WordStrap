@@ -30,6 +30,13 @@ function wordstrap_register_settings() {
               case 'javascript' :
                    wordstrap_register_settings_javascript();
                    break;
+		case 'stylesheet':
+			if(isset($_GET['compile']) && $_GET['compile']) {
+				wordstrap_compile_stylesheets();
+				exit;
+			}
+			wordstrap_register_settings_stylesheets();
+			break;
          }
     }
 }
@@ -77,6 +84,20 @@ function wordstrap_register_settings_javascript()
 }
 
 /*
+ * Register only the stylesheet settings 
+ */
+function wordstrap_register_settings_stylesheets()
+{
+	add_settings_section('wordstrap_settings_stylesheets', "Stylesheet settings", "wordstrap_settings_stylesheets_section_text", "wordstrap");
+
+	add_settings_field("wordstrap_setting_stylesheet_compile", "Recompile stylesheet", "wordstrap_setting_stylesheet_compile", "wordstrap", "wordstrap_settings_stylesheets");
+
+	foreach(wordstrap_get_settings_bootstrap_defaults() as $key => $value) {
+		add_settings_field("wordstrap_setting_stylesheet_bootstrap_text_{$key}", "@{$key}", "wordstrap_setting_stylesheet_bootstrap_text", "wordstrap", "wordstrap_settings_stylesheets", array('bootstrap_setting' => $key));
+		//echo "<p>{$key}: {$value}</p>";
+	}
+}
+/*
  * Introduction text for the general footer section
  */
 function wordstrap_settings_general_footer_section_text() { ?>
@@ -97,6 +118,12 @@ function wordstrap_settings_javascript_section_text() { ?>
     <p><?php _e( 'Choose which javascript plugins that you want to enable' ); ?></p>
 <?php }
 
+/*
+ * Introduction text for the Stylesheets page
+ */
+function wordstrap_settings_stylesheets_section_text() { ?>
+    <p><?php _e( 'Here you can change your stylesheet variables and recompile the stylesheets.' ); ?></p>
+<?php }
 /*=================================*
  * GENERAL TAB FIELDS              *
  *=================================*/
@@ -189,9 +216,28 @@ function wordstrap_setting_javascript_text($args) {
     <input type="checkbox" value="1" name="theme_wordstrap_options[js][<?php echo $args['javascript_file']; ?>]" <?php checked( 1, $wordstrap_options['js'][$args['javascript_file']] ); ?>>
 <?php }
 
+
+/*=================================*
+ * STYLESHEET TAB FIELDS           *
+ *=================================*/
+function wordstrap_setting_stylesheet_compile() { ?>
+
+	<a href="<?php echo $_SERVER['REQUEST_URI']; ?>&compile=1">Compile</a>
+
+<?php
+}
+
+function wordstrap_setting_stylesheet_bootstrap_text($args) {
+    $wordstrap_options = get_option( 'theme_wordstrap_options' );
+    ?>
+    <input type="text" value="<?php echo $wordstrap_options['bootstrap'][$args['bootstrap_setting']]; ?>" name="theme_wordstrap_options[bootstrap][<?php echo $args['bootstrap_setting']; ?>]" >
+<?php }
 /*
  * Validate the user input
  */
+function wordstrap_options_valid_hex_color($hex) {
+    return preg_match('/^#[a-f0-9]{6}$/i', $hex);
+}
 function wordstrap_options_validate($input) {
     $wordstrap_options = get_option("theme_wordstrap_options");
     $valid_input = $wordstrap_options;
@@ -199,6 +245,7 @@ function wordstrap_options_validate($input) {
     $submit_general = (!empty( $input['submit-general'] ) ? true : false );   
     $submit_menu = (!empty( $input['submit-menu'] ) ? true : false );  
     $submit_javascript = (!empty( $input['submit-javascript'] ) ? true : false );
+    $submit_stylesheet = (!empty( $input['submit-stylesheet'] ) ? true : false );  
     
     if ($submit_general) {
         $valid_input['responsive'] = ( $input['responsive'] ? "1" : "0" );
@@ -209,14 +256,48 @@ function wordstrap_options_validate($input) {
         $valid_input['menu']['search'] = ( $input['menu']['search'] ? "1" : "0" );
         $valid_input['menu']['depth'] = ( $input['menu']['depth'] ? "1" : "0" );
     } elseif ($submit_javascript) {
+        $valid_input['js'] = wordstrap_get_settings_javascript_files();
         if( !empty($input['js']) ) {
             foreach ($input['js'] as $file => $value) {
                 $valid_input['js'][$file] = ( "1" === $value ? "1" : "0" );
             }
-        } else {
-            $valid_input['js'] = wordstrap_get_settings_javascript_files();
         }
-    }
+    } elseif($submit_stylesheet) {
+        $bootstrap_defaults = wordstrap_get_settings_bootstrap_defaults();
+		$valid_input['bootstrap']['linkColor'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['linkColor']) ? $input['bootstrap']['linkColor'] : $bootstrap_defaults['linkColor'] );
+		$valid_input['bootstrap']['linkColorHover']	= ( !empty($input['bootstrap']['linkColorHover']) ? $input['bootstrap']['linkColorHover'] : $bootstrap_defaults['linkColorHover'] );
+        $valid_input['bootstrap']['blue'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['blue']) ? $input['bootstrap']['blue'] : $bootstrap_defaults['blue'] );
+        $valid_input['bootstrap']['green'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['green']) ? $input['bootstrap']['green'] : $bootstrap_defaults['green'] );
+        $valid_input['bootstrap']['red'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['red']) ? $input['bootstrap']['red'] : $bootstrap_defaults['red'] );
+        $valid_input['bootstrap']['yellow'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['yellow']) ? $input['bootstrap']['yellow'] : $bootstrap_defaults['yellow'] );
+        $valid_input['bootstrap']['orange'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['orange']) ? $input['bootstrap']['orange'] : $bootstrap_defaults['orange'] );
+        $valid_input['bootstrap']['pink'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['pink']) ? $input['bootstrap']['pink'] : $bootstrap_defaults['pink'] );
+        $valid_input['bootstrap']['purple'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['purple']) ? $input['bootstrap']['purple'] : $bootstrap_defaults['purple'] );
+		$valid_input['bootstrap']['gridColumns'] = ( absint($input['bootstrap']['gridColumns']) ? $input['bootstrap']['gridColumns'] : $bootstrap_defaults['gridColumns'] );
+        $valid_input['bootstrap']['gridColumnWidth'] = ( !empty($input['bootstrap']['gridColumnWidth']) ? $input['bootstrap']['gridColumnWidth'] : $bootstrap_defaults['gridColumnWidth'] );
+        $valid_input['bootstrap']['gridGutterWidth'] = ( !empty($input['bootstrap']['gridGutterWidth']) ? $input['bootstrap']['gridGutterWidth'] : $bootstrap_defaults['gridGutterWidth'] );
+        $valid_input['bootstrap']['fluidGridColumnWidth'] = ( !empty($input['bootstrap']['fluidGridColumnWidth']) ? $input['bootstrap']['fluidGridColumnWidth'] : $bootstrap_defaults['fluidGridColumnWidth'] );
+        $valid_input['bootstrap']['fluidGridGutterWidth'] = ( !empty($input['bootstrap']['fluidGridGutterWidth']) ? $input['bootstrap']['fluidGridGutterWidth'] : $bootstrap_defaults['fluidGridGutterWidth'] );
+        $valid_input['bootstrap']['baseFontSize'] = ( !empty($input['bootstrap']['baseFontSize']) ? $input['bootstrap']['baseFontSize'] : $bootstrap_defaults['baseFontSize'] );
+        $valid_input['bootstrap']['baseFontFamily'] = ( !empty($input['bootstrap']['baseFontFamily']) ? $input['bootstrap']['baseFontFamily'] : $bootstrap_defaults['baseFontFamily'] );
+        $valid_input['bootstrap']['baseLineHeight'] = ( !empty($input['bootstrap']['baseLineHeight']) ? $input['bootstrap']['baseLineHeight'] : $bootstrap_defaults['baseLineHeight'] );
+        $valid_input['bootstrap']['primaryButtonColor'] = ( !empty($input['bootstrap']['primaryButtonColor']) ? $input['bootstrap']['primaryButtonColor'] : $bootstrap_defaults['primaryButtonColor'] );
+        $valid_input['bootstrap']['placeholderText'] = ( !empty($input['bootstrap']['placeholderText']) ? $input['bootstrap']['placeholderText'] : $bootstrap_defaults['placeholderText'] );
+        $valid_input['bootstrap']['navbarHeight'] = ( !empty($input['bootstrap']['navbarHeight']) ? $input['bootstrap']['navbarHeight'] : $bootstrap_defaults['navbarHeight'] );
+        $valid_input['bootstrap']['navbarBackground'] = ( !empty($input['bootstrap']['navbarBackground']) ? $input['bootstrap']['navbarBackground'] : $bootstrap_defaults['navbarBackground'] );
+        $valid_input['bootstrap']['navbarBackgroundHighlight'] = ( !empty($input['bootstrap']['navbarBackgroundHighlight']) ? $input['bootstrap']['navbarBackgroundHighlight'] : $bootstrap_defaults['navbarBackgroundHighlight'] );
+        $valid_input['bootstrap']['navbarText'] = ( !empty($input['bootstrap']['navbarText']) ? $input['bootstrap']['navbarText'] : $bootstrap_defaults['navbarText'] );
+        $valid_input['bootstrap']['navbarLinkColor'] = ( !empty($input['bootstrap']['navbarLinkColor']) ? $input['bootstrap']['navbarLinkColor'] : $bootstrap_defaults['navbarLinkColor'] );
+        $valid_input['bootstrap']['navbarLinkColorHover'] = ( !empty($input['bootstrap']['navbarLinkColorHover']) ? $input['bootstrap']['navbarLinkColorHover'] : $bootstrap_defaults['navbarLinkColorHover'] );
+        $valid_input['bootstrap']['warningText'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['warningText']) ? $input['bootstrap']['warningText'] : $bootstrap_defaults['warningText'] );
+        $valid_input['bootstrap']['warningBackground'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['warningBackground']) ? $input['bootstrap']['warningBackground'] : $bootstrap_defaults['warningBackground'] );
+        $valid_input['bootstrap']['errorText'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['errorText']) ? $input['bootstrap']['errorText'] : $bootstrap_defaults['errorText'] );
+        $valid_input['bootstrap']['errorBackground'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['errorBackground']) ? $input['bootstrap']['errorBackground'] : $bootstrap_defaults['errorBackground'] );
+        $valid_input['bootstrap']['successText'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['successText']) ? $input['bootstrap']['successText'] : $bootstrap_defaults['successText'] );
+        $valid_input['bootstrap']['successBackground'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['successBackground']) ? $input['bootstrap']['successBackground'] : $bootstrap_defaults['successBackground'] );
+        $valid_input['bootstrap']['infoText'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['infoText']) ? $input['bootstrap']['infoText'] : $bootstrap_defaults['infoText'] );
+        $valid_input['bootstrap']['infoBackground'] =  ( wordstrap_options_valid_hex_color($input['bootstrap']['infoBackground']) ? $input['bootstrap']['infoBackground'] : $bootstrap_defaults['infoBackground'] );
+	}
    
     return $valid_input;
 }
@@ -235,7 +316,8 @@ function wordstrap_get_default_options() {
         ),
         'footer_text' => 'Theme created by <a href="http://ghosty.co.uk">Ghosty</a>, styling by Bootsrap',
         'responsive' => 1,
-        'js' => wordstrap_get_settings_javascript_files()
+        'js' => wordstrap_get_settings_javascript_files(),
+	'bootstrap' => wordstrap_get_settings_bootstrap_defaults()
     );
     return $options;
 }
@@ -260,7 +342,8 @@ function wordstrap_get_settings_page_tabs() {
     $tabs = array(
         'general' => "General",
         'menu' => "Menu",
-        'javascript' => "Javascript"
+        'javascript' => "Javascript",
+	'stylesheet' => "Stylesheets"
     );
     return $tabs;
 }
@@ -287,6 +370,47 @@ function wordstrap_get_settings_javascript_files() {
 }
 
 /*
+ * Bootstrap default helper
+ */
+function wordstrap_get_settings_bootstrap_defaults() {
+	$bootstrap = array(
+		'linkColor'	=> "#0088cc",
+		'linkColorHover' => "darken(@linkColor, 15%)",
+		'blue' => "#049cdb",
+		'green' => "#46a546",
+		'red' => "#9d261d",
+		'yellow' => "#ffc40d",
+		'orange' => "#f89406",
+		'pink' => "#c3325f",
+		'purple' => "#7a43b6",
+		'gridColumns' => "12",
+		'gridColumnWidth' => "60px",
+		'gridGutterWidth' => "12px",
+		'fluidGridColumnWidth' => "6.382978723%",
+		'fluidGridGutterWidth' => "2.127659574%",
+		'baseFontSize' => "13px",
+		'baseFontFamily' => "'Helvetica Neue', Helvetice, Arial, sans-serif",
+		'baseLineHeight' => "18px",
+		'primaryButtonColor' => "@blue",
+		'placeholderText' => "@grayLight",
+		'navbarHeight' => "40px",
+		'navbarBackground' => "@grayDarker",
+		'navbarBackgroundHighlight' => "@grayDark",
+		'navbarText' => "@grayLight",
+		'navbarLinkColor' => "@grayLight",
+		'navbarLinkColorHover' => "@white",
+		'warningText' => "#c09853",
+		'warningBackground' => "#fcf8e3",
+		'errorText'	 => "#b94a48",
+		'errorBackground' => "#f2dede",
+		'successText' => "#468847",
+		'successBackground' => "#dff0f8",
+		'infoText' => "#3a87ad",
+		'infoBackground' => "#d9edf7"
+	);
+	return $bootstrap;
+}
+/*
  * Add to the admin menu interface
  */
 function wordstrap_menu_options() {
@@ -305,9 +429,9 @@ function wordstrap_admin_options_page() {
 <div class="wrap">
 
 <?php wordstrap_admin_options_page_tabs(); ?>
-
-<?php if ( isset( $_GET['settings-updated'] ) ) : ?>
-<div class="updated"><p>Theme settings updated successfully.</p></div>
+<?php settings_errors(); ?>
+<?php if(isset($_GET['error']) && !empty($_GET['error'])) : ?>
+	<div class="error"><p><?php echo $_GET['error']; ?></p></div>
 <?php endif; ?>
 
 <form action="options.php" method="post">

@@ -12,9 +12,9 @@
 			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 
-		<link rel="stylesheet/less" href="<?php bloginfo('template_directory'); ?>/bootstrap/less/bootstrap.less">
+		<link rel="stylesheet" href="<?php bloginfo('template_directory'); ?>/cache/bootstrap.css">
 		<?php if($wordstrap_options['responsive']): ?>
-		<link rel="stylesheet/less" href="<?php bloginfo('template_directory'); ?>/bootstrap/less/responsive.less">
+		<link rel="stylesheet" href="<?php bloginfo('template_directory'); ?>/cache/responsive.css">
 		<?php endif; ?>
 		<link rel="stylesheet/less" href="<?php bloginfo('template_directory'); ?>/less/style.less">
 		<link rel="stylesheet" type="text/css" href="<?php bloginfo('stylesheet_url'); ?>">
