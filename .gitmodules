@@ -1,6 +1,3 @@
-[submodule "bootstrap"]
-	path = lib/bootstrap
-	url = https://github.com/twitter/bootstrap.git
 [submodule "lib/less.php"]
 	path = lib/less.php
 	url = https://github.com/agar/less.php.git
