@@ -44,8 +44,27 @@ function wordstrap_compile_stylesheets() {
 	$parser = new \Less\Parser();
 	$parser->getEnvironment()->setCompress(false);
 
-	$bootstrapLess =  $parser->parseFile(__DIR__."/bootstrap/less/bootstrap.less")->getCss();
-	$responsiveLess =  $parser->parseFile(__DIR__."/bootstrap/less/responsive.less")->getCss();
+	//parse the variables from the database.
+	$bootstrap_options = "";
+	$wordstrap_options = get_option("theme_wordstrap_options");
+	foreach($wordstrap_options['bootstrap'] as $key => $value) {
+		$bootstrap_options .= "@{$key}: {$value}; ";
+	}
+
+	$parser->parse($bootstrap_options);
+
+	$bootstrapLess =  $parser->parseFile(__DIR__."/bootstrap/less/bootstrap.less", true);
+	$responsiveLess =  $parser->parseFile(__DIR__."/bootstrap/less/responsive.less", true);
+
+	//parse the variables from the database.
+	$wordstrap_options = get_option("theme_wordstrap_options");
+	foreach($wordstrap_options['bootstrap'] as $key => $value) {
+		//$bootstrapLess->parse("@{$key}: {$value};");
+		//$responsiveLess->parse("@{$key}: {$value};");
+	}
+
+	$bootstrapCss = $bootstrapLess->getCss();
+	$responsiveCss = $responsiveLess->getCss();
 
 	//time to save to file
 	$bootstrapHandle = @fopen(dirname(__FILE__)."/cache/bootstrap.css", "w");
@@ -55,8 +74,8 @@ function wordstrap_compile_stylesheets() {
 		exit;
 	}
 
-	$bootstrapWritten = fwrite($bootstrapHandle, $bootstrapLess);
-	$responsiveWritten = fwrite($responsiveHandle, $responsiveLess);
+	$bootstrapWritten = fwrite($bootstrapHandle, $bootstrapCss);
+	$responsiveWritten = fwrite($responsiveHandle, $responsiveCss);
 
 	if(!$bootstrapWritten || !$responsiveWritten) {
 		header("Location: {$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&error=402");
