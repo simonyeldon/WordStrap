@@ -68,6 +68,13 @@ class Wordstrap_Menu_Walker extends Walker_Nav_Menu {
 		$class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args ) );
 		$class_names = ' class="' . esc_attr( $class_names ) . '"';
 
+		if($item->url == "##seperator##" && $item->title == "##seperator##") {
+			$class_names = " class=\"divider-vertical\" ";
+			$id = "";
+			$value = "";
+			$seperator = true;
+		}
+
 		$id = apply_filters( 'nav_menu_item_id', 'menu-item-'. $item->ID, $item, $args );
 		$id = strlen( $id ) ? ' id="' . esc_attr( $id ) . '"' : '';
 
@@ -81,13 +88,14 @@ class Wordstrap_Menu_Walker extends Walker_Nav_Menu {
 		if( in_array('dropdown', $item->classes) ) {
 			$attributes .= ' class="dropdown-toggle" data-toggle="dropdown"';
 		}
-
-		$item_output = $args->before;
-		$item_output .= '<a'. $attributes .'>';
-		$item_output .= $args->link_before . apply_filters( 'the_title', $item->title, $item->ID ) . $args->link_after;
-		if( in_array( 'dropdown', $item->classes ) ) { $item_output .= '<b class="caret"></b>';	}
-		$item_output .= '</a>';
-		$item_output .= $args->after;
-		$output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
+		if( !$seperator ) {
+			$item_output = $args->before;
+			$item_output .= '<a'. $attributes .'>';
+			$item_output .= $args->link_before . apply_filters( 'the_title', $item->title, $item->ID ) . $args->link_after;
+			if( in_array( 'dropdown', $item->classes ) ) { $item_output .= '<b class="caret"></b>';	}
+			$item_output .= '</a>';
+			$item_output .= $args->after;
+			$output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
+		}
 	}
 }

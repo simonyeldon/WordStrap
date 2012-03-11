@@ -53,8 +53,8 @@ function wordstrap_compile_stylesheets() {
 
 	$parser->parse($bootstrap_options);
 
-	$bootstrapLess =  $parser->parseFile(__DIR__."/bootstrap/less/bootstrap.less", true);
-	$responsiveLess =  $parser->parseFile(__DIR__."/bootstrap/less/responsive.less", true);
+	$bootstrapLess =  $parser->parseFile(__DIR__."/lib/bootstrap/less/bootstrap.less", true);
+	$responsiveLess =  $parser->parseFile(__DIR__."/lib/bootstrap/less/responsive.less", true);
 
 	//parse the variables from the database.
 	$wordstrap_options = get_option("theme_wordstrap_options");
