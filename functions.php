@@ -11,15 +11,6 @@ function wordstrap_register_menus() {
 }
 add_action( 'init', 'wordstrap_register_menus' );
 
-function wordstrap_after_setup_theme() {
-	add_theme_support( 'post-thumbnails' );
-	add_image_size( 'hero-unit-xlarge', 1170, 9999 );
-	add_image_size( 'hero-unit-large', 940, 9999 );
-	add_image_size( 'hero-unit-medium', 724, 9999 );
-	add_image_size( 'hero-unit-small', 360, 9999 );
-}
-add_action( 'after_setup_theme', 'wordstrap_after_setup_theme' );
-
 function wordstrap_body_classes( $classes ) {
 	global $wp_query;
 

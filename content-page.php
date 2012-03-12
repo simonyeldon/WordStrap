@@ -1,10 +1,3 @@
-<?php if( has_post_thumbnail() ): ?>
-<div class="hero-unit">
-	<h1>Hello, world!</h1>
-	<p>lakjdlakjhdlakjfh alkjfhadls kjfhdls fksjdhfls kdjfhsldkjfhsdfkl jshfuoywevof weuyvwe ofuyvwe fouwe vf.</p>
-</div>
-<?php endif; ?>
-
 <article class="row">
 	
 	<div class="span12">
