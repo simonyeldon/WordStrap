@@ -4,6 +4,9 @@ A WordPress theme that uses Bootstrap v2 from twitter.
 ## Installing
 Clone the repository into your themes folder of your WordPress installation using the following
 
+## Requirements
+PHP 5.3
+
 ```sh
 git clone https://github.com/simonyeldon/WordStrap.git wordstrap
 ```
