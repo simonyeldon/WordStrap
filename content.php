@@ -1,5 +1,6 @@
 <?php if( has_post_thumbnail() ): ?>
-<div class="hero-unit">
+<?php $thumbnail_path = wp_get_attachment_image_src( get_post_thumbnail_id(), "large"); ?>
+<div class="hero-unit wordstrap-featured-image" style="background-image: url(<?php echo $thumbnail_path[0]; ?>);">
 	<h1>Hello, world!</h1>
 	<p>lakjdlakjhdlakjfh alkjfhadls kjfhdls fksjdhfls kdjfhsldkjfhsdfkl jshfuoywevof weuyvwe ofuyvwe fouwe vf.</p>
 </div>
