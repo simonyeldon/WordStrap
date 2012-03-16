@@ -1,19 +1,27 @@
 <?php if( has_post_thumbnail() ): ?>
-<?php $thumbnail_path = wp_get_attachment_image_src( get_post_thumbnail_id(), "large"); ?>
-<div class="hero-unit wordstrap-featured-image" style="background-image: url(<?php echo $thumbnail_path[0]; ?>);">
-	<h1>Hello, world!</h1>
-	<p>lakjdlakjhdlakjfh alkjfhadls kjfhdls fksjdhfls kdjfhsldkjfhsdfkl jshfuoywevof weuyvwe ofuyvwe fouwe vf.</p>
-</div>
-<?php endif; ?>
-
-<article class="row">
-	
+	<?php $thumbnail_path = wp_get_attachment_image_src( get_post_thumbnail_id(), array(1170, 9999)); ?>
 	<header>
-		<div class="span12">
-			<h2><?php the_title(); ?></h2> 
+	<div class="hero-unit wordstrap-featured-image" style="background-image: url(<?php echo $thumbnail_path[0]; ?>);">
+		<h1><?php the_title(); ?></h1>
+		<?php echo get_post_meta($post->ID, "hero-text", true); ?>
+	</div>
+	<div class="row">
+		<div class="post-meta span12">	
 			<p><?php echo __("Posted in"); ?> <?php the_category(", "); ?></p>
 		</div>
+	</div>
 	</header>
+<?php endif; ?>
+
+<article class="row" id="post-<?php the_ID(); ?>">
+	<?php if(!has_post_thumbnail()): ?>	
+		<header>
+			<div class="span12">
+				<h2><?php the_title(); ?></h2> 
+				<p><?php echo __("Posted in"); ?> <?php the_category(", "); ?></p>
+			</div>
+		</header>
+	<?php endif; ?>
 
 	<div class="span12 post-contents">
 		<?php the_content(); ?>

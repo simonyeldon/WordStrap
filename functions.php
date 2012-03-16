@@ -1,6 +1,7 @@
 <?php
 require_once "lib/walker.class.php";
 require_once "lib/settings.php";
+require_once "lib/metabox.class.php";
 
 function wordstrap_register_menus() {
 	register_nav_menus(
@@ -10,6 +11,13 @@ function wordstrap_register_menus() {
 	);
 }
 add_action( 'init', 'wordstrap_register_menus' );
+
+function wordstrap_load_meta_boxClass() {
+	return new wordstrap_meta_box();
+}
+if( is_admin() ) {
+	add_action( 'load-post.php', 'wordstrap_load_meta_boxClass' );
+}
 
 function wordstrap_after_setup_theme() {
 	add_theme_support( 'post-thumbnails' );
@@ -38,6 +46,15 @@ function wordstrap_body_classes( $classes ) {
 add_filter( 'body_class', 'wordstrap_body_classes' );
 
 function wordstrap_compile_stylesheets() {
+	$css_folder = __DIR__."/lib/bootstrap/css";
+	//does the bootstrap css folder exist, if not create it.
+	if( !is_dir($css_folder) && !is_file($css_folder) ) {
+		$dir_made = mkdir($css_folder);
+		if(!$dir_made) {
+			header("Location: {$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&error=403");
+			exit;
+		}
+	}
 	$lessLibraryPath = __DIR__."/lib/less.php/lib/";
 	
 	// Register an autoload function
@@ -60,10 +77,10 @@ function wordstrap_compile_stylesheets() {
 		$bootstrap_options .= "@{$key}: {$value}; ";
 	}
 
-	$parser->parse($bootstrap_options);
+	//$parser->parse($bootstrap_options); //Options not working yet
 
-	$bootstrapLess =  $parser->parseFile(__DIR__."/lib/bootstrap/less/bootstrap.less", true);
-	$responsiveLess =  $parser->parseFile(__DIR__."/lib/bootstrap/less/responsive.less", true);
+	$bootstrapLess =  $parser->parseFile(__DIR__."/lib/bootstrap/less/bootstrap.less"); //, true);
+	$responsiveLess =  $parser->parseFile(__DIR__."/lib/bootstrap/less/responsive.less"); //, true);
 
 	//parse the variables from the database.
 	$wordstrap_options = get_option("theme_wordstrap_options");
@@ -76,8 +93,8 @@ function wordstrap_compile_stylesheets() {
 	$responsiveCss = $responsiveLess->getCss();
 
 	//time to save to file
-	$bootstrapHandle = @fopen(dirname(__FILE__)."/cache/bootstrap.css", "w");
-	$responsiveHandle = @fopen(dirname(__FILE__)."/cache/responsive.css", "w");
+	$bootstrapHandle = @fopen(__DIR__."/lib/bootstrap/css/bootstrap.css", "w");
+	$responsiveHandle = @fopen(__DIR__."/lib/bootstrap/css/responsive.css", "w");
 	if(!$bootstrapHandle || !$responsiveHandle) {
 		header("Location: {$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&error=401");
 		exit;
@@ -94,7 +111,10 @@ function wordstrap_compile_stylesheets() {
 	fclose($bootstrapHandle);
 	fclose($responsiveHandle);
 
-	header("Location: {$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&settings-updated=true");
+	add_settings_error('general', 'settings_updated', __('Stylesheets compiled.'), 'updated');
+	set_transient('settings_errors', get_settings_errors(), 30);
+
+	wp_redirect("{$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&settings-updated=true");
 	exit;	
 	
 }
