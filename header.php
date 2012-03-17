@@ -19,8 +19,16 @@
 		<link rel="stylesheet/less" href="<?php bloginfo('template_directory'); ?>/less/style.less">
 		<link rel="stylesheet" type="text/css" href="<?php bloginfo('stylesheet_url'); ?>">
 
-		<script src="<?php bloginfo('template_directory'); ?>/js/less/less.js"></script>
 		<?php wp_enqueue_script("jquery"); ?>
+		<?php if( ( is_single() || is_page() ) && has_post_thumbnail() ): ?>
+		<?php $thumbnail_path_xlarge = wp_get_attachment_image_src( get_post_thumbnail_id(), array(1170, 9999)); ?>
+        	<style>
+			.wordstrap-featured-image {
+				background-image: url(<?php echo $thumbnail_path_xlarge[0]; ?>);
+			}
+		</style>
+		<?php endif; ?>
+		<!-- <?php echo $post->ID; ?> -->
 		<?php wp_head(); ?>
 	</head>
 

@@ -1,7 +1,6 @@
 <?php if( has_post_thumbnail() ): ?>
-	<?php $thumbnail_path = wp_get_attachment_image_src( get_post_thumbnail_id(), array(1170, 9999)); ?>
 	<header>
-	<div class="hero-unit wordstrap-featured-image" style="background-image: url(<?php echo $thumbnail_path[0]; ?>);">
+	<div class="hero-unit wordstrap-featured-image">
 		<h1><?php the_title(); ?></h1>
 		<?php echo get_post_meta($post->ID, "hero-text", true); ?>
 	</div>
