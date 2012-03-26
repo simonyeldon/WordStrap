@@ -24,7 +24,7 @@
 			<?php 
 				$thumbnail = array( 
 					"xlarge" => wp_get_attachment_image_src( get_post_thumbnail_id(), array(1170, 9999)),
-					"large" => wp_get_attachment_image_src( get_post_thumbnail_id(), array(940, 9999)),
+					"large" => wp_get_attachment_image_src( get_post_thumbnail_id(), array(852, 9999)),
 					"medium" => wp_get_attachment_image_src( get_post_thumbnail_id(), array(724, 9999)),
 					"small" => wp_get_attachment_image_src( get_post_thumbnail_id(), array(440, 9999)),
 					"normal" => wp_get_attachment_image_src( get_post_thumbnail_id(), array(852, 9999)),

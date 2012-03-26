@@ -13,3 +13,9 @@ body.fixed-nav-bar {
 body.admin-bar .navbar-fixed-top {
 	top: 28px;
 }
+
+@media (max-width:979px) {
+	body.fixed-nav-bar {
+		padding-top: 0!important;
+	}
+}

@@ -19,12 +19,13 @@
 	<p><?php _e('Sorry, no results were found.'); ?></p>
 <?php endif; ?>
 
-
-		<div class="span12">
-			<ul class="pager">
-				<li class="previous"><?php next_posts_link("&larr; Older"); ?></li>
-				<li class="next"><?php previous_posts_link("Newer &rarr;"); ?></li>
-			</ul>
+		<div class="row">
+			<div class="span12">
+				<ul class="pager">
+					<li class="previous"><?php next_posts_link("&larr; Older"); ?></li>
+					<li class="next"><?php previous_posts_link("Newer &rarr;"); ?></li>
+				</ul>
+			</div>
 		</div>
 
 	</div> <!-- /.container -->
