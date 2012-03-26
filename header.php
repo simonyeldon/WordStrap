@@ -12,15 +12,53 @@
 			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 
-		<link rel="stylesheet" href="<?php bloginfo('template_directory'); ?>/cache/bootstrap.css">
+		<link rel="stylesheet" href="<?php bloginfo('template_directory'); ?>/lib/bootstrap/css/bootstrap.css">
 		<?php if($wordstrap_options['responsive']): ?>
-		<link rel="stylesheet" href="<?php bloginfo('template_directory'); ?>/cache/responsive.css">
+		<link rel="stylesheet" href="<?php bloginfo('template_directory'); ?>/lib/bootstrap/css/responsive.css">
 		<?php endif; ?>
 		<link rel="stylesheet/less" href="<?php bloginfo('template_directory'); ?>/less/style.less">
 		<link rel="stylesheet" type="text/css" href="<?php bloginfo('stylesheet_url'); ?>">
 
-		<script src="<?php bloginfo('template_directory'); ?>/js/less/less.js"></script>
 		<?php wp_enqueue_script("jquery"); ?>
+		<?php if( ( is_single() || is_page() ) && has_post_thumbnail() ): ?>
+			<?php 
+				$thumbnail = array( 
+					"xlarge" => wp_get_attachment_image_src( get_post_thumbnail_id(), array(1170, 9999)),
+					"large" => wp_get_attachment_image_src( get_post_thumbnail_id(), array(852, 9999)),
+					"medium" => wp_get_attachment_image_src( get_post_thumbnail_id(), array(724, 9999)),
+					"small" => wp_get_attachment_image_src( get_post_thumbnail_id(), array(440, 9999)),
+					"normal" => wp_get_attachment_image_src( get_post_thumbnail_id(), array(852, 9999)),
+				);
+			?>
+			<style>
+				.wordstrap-featured-image {
+					background-image: url(<?php echo $thumbnail['normal'][0]; ?>);
+				}
+				<?php if($wordstrap_options['responsive']): ?>
+				@media (max-width: 480px) {
+					.wordstrap-featured-image {
+						background-image: url(<?php echo $thumbnail['small'][0]; ?>);
+					}
+				}
+				@media (max-width: 767px) {
+					.wordstrap-featured-image {
+						background-image: url(<?php echo $thumbnail['medium'][0]; ?>);
+					}
+				}
+				@media (max-width: 979px) and (min-width: 768px) {
+					.wordstrap-featured-image {
+						background-image: url(<?php echo $thumbnail['medium'][0]; ?>);
+					}
+				}
+				@media (min-width: 1200px) {	
+					.wordstrap-featured-image {
+						background-image: url(<?php echo $thumbnail['xlarge'][0]; ?>);
+					}
+				}
+				<?php endif; ?>
+			</style>
+		<?php endif; ?>
+		<!-- <?php echo $post->ID; ?> -->
 		<?php wp_head(); ?>
 	</head>
 

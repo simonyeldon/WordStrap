@@ -1,6 +1,7 @@
 <?php
 require_once "lib/walker.class.php";
 require_once "lib/settings.php";
+require_once "lib/metabox.class.php";
 
 function wordstrap_register_menus() {
 	register_nav_menus(
@@ -11,6 +12,25 @@ function wordstrap_register_menus() {
 }
 add_action( 'init', 'wordstrap_register_menus' );
 
+<<<<<<< HEAD
+=======
+function wordstrap_load_meta_boxClass() {
+	return new wordstrap_meta_box();
+}
+if( is_admin() ) {
+	add_action( 'load-post.php', 'wordstrap_load_meta_boxClass' );
+}
+
+function wordstrap_after_setup_theme() {
+	add_theme_support( 'post-thumbnails' );
+	add_image_size( 'hero-unit-xlarge', 1170, 9999 );
+	add_image_size( 'hero-unit-large', 940, 9999 );
+	add_image_size( 'hero-unit-medium', 724, 9999 );
+	add_image_size( 'hero-unit-small', 360, 9999 );
+}
+add_action( 'after_setup_theme', 'wordstrap_after_setup_theme' );
+
+>>>>>>> 0028614d5b7852db0dce6ed354d1f0be2324f49f
 function wordstrap_body_classes( $classes ) {
 	global $wp_query;
 
@@ -29,6 +49,54 @@ function wordstrap_body_classes( $classes ) {
 add_filter( 'body_class', 'wordstrap_body_classes' );
 
 function wordstrap_compile_stylesheets() {
+	$css_folder = __DIR__."/lib/bootstrap/css";
+
+	//parse the variables from the database.
+	$bootstrap_options = "";
+	$wordstrap_options = get_option("theme_wordstrap_options");
+	
+	//open variables file and read it line by line
+	$variables_handle = fopen(__DIR__."/lib/bootstrap/less/variables.less", "r+");
+	$variables_content = "";
+	if($variables_handle) {
+		while( ($line = fgets($variables_handle)) !== FALSE ) {
+			if(preg_match('/^@([a-zA-Z]+):(.*);/', $line, $matches)) {
+				if(array_key_exists($matches[1], $wordstrap_options['bootstrap'])) {
+					$variables_content .= "@{$matches[1]}: {$wordstrap_options['bootstrap'][$matches[1]]};".PHP_EOL;
+				} else {
+					$variables_content .= $line;
+				}
+			} else {
+				$variables_content .= $line;
+			}
+		}
+	} else {
+		//unable to find the variables file
+		add_settings_error('error', 'settings_updated', __('Unable to locate Bootstrap, please make sure that it is installed properly..'), 'error');
+		set_transient('settings_errors', get_settings_errors(), 30);
+		wp_redirect("{$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&settings-updated=true");
+		exit;
+	}
+	//write the new variables file
+	if( fwrite($variables_handle, $variables_content) === FALSE ) {
+		//unable to write file
+		add_settings_error('error', 'settings_updated', __('Unable to write to the variables file, please make sure that the filesystem is writeable.'), 'error');
+		set_transient('settings_errors', get_settings_errors(), 30);
+		wp_redirect("{$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&settings-updated=true");
+		exit;
+	}
+
+	//does the bootstrap css folder exist, if not create it.
+	if( !is_dir($css_folder) && !is_file($css_folder) ) {
+		$dir_made = mkdir($css_folder);
+		if(!$dir_made) {
+			add_settings_error('error', 'settings_updated', __('Unable to create stylesheets folder, please make sure that the filesystem is writeable.'), 'error');
+			set_transient('settings_errors', get_settings_errors(), 30);
+			wp_redirect("{$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&settings-updated=true");
+			exit;
+		}
+	}
+
 	$lessLibraryPath = __DIR__."/lib/less.php/lib/";
 	
 	// Register an autoload function
@@ -38,23 +106,17 @@ function wordstrap_compile_stylesheets() {
 		require_once $fileName;
 	    }
 	});
-	//require_once "lib/less.php/lib/Less/Parser.php";
-	//require_once "lib/less.php/lib/Less/Environment.php";
 	
-	$parser = new \Less\Parser();
-	$parser->getEnvironment()->setCompress(false);
+	$bootstrap_parser = new \Less\Parser();
+	$bootstrap_parser->getEnvironment()->setCompress(false);
 
-	//parse the variables from the database.
-	$bootstrap_options = "";
-	$wordstrap_options = get_option("theme_wordstrap_options");
-	foreach($wordstrap_options['bootstrap'] as $key => $value) {
-		$bootstrap_options .= "@{$key}: {$value}; ";
-	}
+	$responsive_parser = new \Less\Parser();
+	$responsive_parser->getEnvironment()->setCompress(false);
 
-	$parser->parse($bootstrap_options);
+	//$parser->parse($bootstrap_options); //Options not working yet
 
-	$bootstrapLess =  $parser->parseFile(__DIR__."/lib/bootstrap/less/bootstrap.less", true);
-	$responsiveLess =  $parser->parseFile(__DIR__."/lib/bootstrap/less/responsive.less", true);
+	$bootstrapLess =  $bootstrap_parser->parseFile(__DIR__."/lib/bootstrap/less/bootstrap.less"); //, true);
+	$responsiveLess =  $responsive_parser->parseFile(__DIR__."/lib/bootstrap/less/responsive.less"); //, true);
 
 	//parse the variables from the database.
 	$wordstrap_options = get_option("theme_wordstrap_options");
@@ -67,10 +129,12 @@ function wordstrap_compile_stylesheets() {
 	$responsiveCss = $responsiveLess->getCss();
 
 	//time to save to file
-	$bootstrapHandle = @fopen(dirname(__FILE__)."/cache/bootstrap.css", "w");
-	$responsiveHandle = @fopen(dirname(__FILE__)."/cache/responsive.css", "w");
+	$bootstrapHandle = @fopen(__DIR__."/lib/bootstrap/css/bootstrap.css", "w");
+	$responsiveHandle = @fopen(__DIR__."/lib/bootstrap/css/responsive.css", "w");
 	if(!$bootstrapHandle || !$responsiveHandle) {
-		header("Location: {$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&error=401");
+		add_settings_error('error', 'settings_updated', __('Unable to open stylesheets, please make sure that the files are writeable.'), 'error');
+		set_transient('settings_errors', get_settings_errors(), 30);
+		wp_redirect("{$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&settings-updated=true");
 		exit;
 	}
 
@@ -78,14 +142,19 @@ function wordstrap_compile_stylesheets() {
 	$responsiveWritten = fwrite($responsiveHandle, $responsiveCss);
 
 	if(!$bootstrapWritten || !$responsiveWritten) {
-		header("Location: {$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&error=402");
+		add_settings_error('error', 'settings_updated', __('Unable to save stylesheets, please make sure that the files are writeable.'), 'error');
+		set_transient('settings_errors', get_settings_errors(), 30);
+		wp_redirect("{$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&settings-updated=true");
 		exit;	
 	}
 
 	fclose($bootstrapHandle);
 	fclose($responsiveHandle);
 
-	header("Location: {$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&settings-updated=true");
+	add_settings_error('general', 'settings_updated', __('Stylesheets compiled.'), 'updated');
+	set_transient('settings_errors', get_settings_errors(), 30);
+
+	wp_redirect("{$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&settings-updated=true");
 	exit;	
 	
 }

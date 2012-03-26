@@ -30,7 +30,7 @@
 		<?php if ($wordstrap_options['js']['tab']) : ?>
 		    <script src="<?php bloginfo('template_directory'); ?>/lib/bootstrap/js/bootstrap-tab.js"></script>
 		<?php endif; ?>
-		<?php if ($wordstrap_options['js']['tooltip']) : ?>
+		<?php if ($wordstrap_options['js']['tooltip'] || $wordstrap_options['js']['popover']) : //required if using popover ?>
 		    <script src="<?php bloginfo('template_directory'); ?>/lib/bootstrap/js/bootstrap-tooltip.js"></script>
 		<?php endif; ?>
 		<?php if ($wordstrap_options['js']['popover']) : ?>
