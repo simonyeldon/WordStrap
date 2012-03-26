@@ -61,8 +61,9 @@ class wordstrap_meta_box {
 		$value = get_post_meta($post->ID, "wordstrap_hero_area_text", true);
 
 	  // The actual fields for data entry
-	  echo '<label for="wordstrap_hero_area_text">';
-	  echo '</label> ';
-	  echo '<textarea id="wordstrap_hero_area_text" name="wordstrap_hero_area_text">'.$value.'</textarea>';
+//	  echo '<label for="wordstrap_hero_area_text">';
+//	  echo '</label> ';
+//	  echo '<textarea id="wordstrap_hero_area_text" name="wordstrap_hero_area_text">'.$value.'</textarea>';
+		wp_editor( $value, "wordstrap_hero_area_text", array( "teeny" => true, "media_buttons" => false ) );
 	}
 }
