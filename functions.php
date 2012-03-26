@@ -12,8 +12,6 @@ function wordstrap_register_menus() {
 }
 add_action( 'init', 'wordstrap_register_menus' );
 
-<<<<<<< HEAD
-=======
 function wordstrap_load_meta_boxClass() {
 	return new wordstrap_meta_box();
 }
@@ -30,7 +28,6 @@ function wordstrap_after_setup_theme() {
 }
 add_action( 'after_setup_theme', 'wordstrap_after_setup_theme' );
 
->>>>>>> 0028614d5b7852db0dce6ed354d1f0be2324f49f
 function wordstrap_body_classes( $classes ) {
 	global $wp_query;
 
