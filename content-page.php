@@ -2,7 +2,7 @@
 	<header>
 	<div class="hero-unit wordstrap-featured-image">
 		<h1><?php the_title(); ?></h1>
-		<?php echo get_post_meta($post->ID, "hero-text", true); ?>
+		<?php echo get_post_meta($post->ID, "wordstrap_hero_area_text", true); ?>
 	</div>
 	</header>
 <?php endif; ?>
