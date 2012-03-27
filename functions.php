@@ -12,6 +12,7 @@ function wordstrap_register_menus() {
 }
 add_action( 'init', 'wordstrap_register_menus' );
 
+// call the metabox class
 function wordstrap_load_meta_boxClass() {
 	return new wordstrap_meta_box();
 }
