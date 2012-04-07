@@ -79,8 +79,8 @@
 								</a>
 								<?php endif; ?>
 
-								<?php if($wordstrap_options['menu']['branding']): ?>
-								<a href="<?php bloginfo('url'); ?>" class="brand"><?php bloginfo('blog_title'); ?></a>
+								<?php if($wordstrap_options['menu']['branding'] || $wordstrap_options['responsive']): ?>
+								<a href="<?php bloginfo('url'); ?>" class="brand<?php if(!$wordstrap_options['menu']['branding']) { echo " hidden-desktop"; } ?>"><?php bloginfo('blog_title'); ?></a>
 								<?php endif; ?>
 								<?php if($wordstrap_options['responsive']): ?>
 								<div class="nav-collapse"> 
@@ -116,7 +116,7 @@
 						<div class="span12">
 							<?php if(!$wordstrap_options['menu']['branding']): ?>
 							<hgroup>
-								<h1 id="site-title"><a href="<?php bloginfo('url'); ?>">
+								<h1 id="site-title"><a href="<?php bloginfo('url'); ?>" title="<?php bloginfo('blog_title'); ?>">
 									<span><?php bloginfo('blog_title'); ?></span>
 								</a></h1>
 								<p id="site-description">

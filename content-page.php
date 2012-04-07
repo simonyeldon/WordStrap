@@ -9,7 +9,7 @@
 
 <article class="row">
 	
-	<div class="span12">
+	<div class="<?php wordstrap_main_content_span(); ?>">
 		<?php if(!has_post_thumbnail()): ?>
 			<header>
 				<h2><?php the_title(); ?></h2>

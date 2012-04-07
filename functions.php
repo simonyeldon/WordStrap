@@ -2,6 +2,7 @@
 require_once "lib/walker.class.php";
 require_once "lib/settings.php";
 require_once "lib/metabox.class.php";
+require_once "lib/widgets.php";
 
 function wordstrap_register_menus() {
 	register_nav_menus(
@@ -46,6 +47,23 @@ function wordstrap_body_classes( $classes ) {
 }
 add_filter( 'body_class', 'wordstrap_body_classes' );
 
+function wordstrap_main_content_span($echo = true) {
+	$span = 12;
+	if(is_active_sidebar("wordstrap_sidebar_left")) {
+		$span -= 3;
+	}
+	if(is_active_sidebar("wordstrap_sidebar_right")) {
+		$span -= 3;
+	}
+
+	$span = "span".$span;
+	
+	if($echo) {
+		echo $span;
+	} else {
+		return $echo;
+	}
+}
 function wordstrap_compile_stylesheets() {
 	$css_folder = __DIR__."/lib/bootstrap/css";
 
@@ -113,8 +131,15 @@ function wordstrap_compile_stylesheets() {
 
 	//$parser->parse($bootstrap_options); //Options not working yet
 
-	$bootstrapLess =  $bootstrap_parser->parseFile(__DIR__."/lib/bootstrap/less/bootstrap.less"); //, true);
-	$responsiveLess =  $responsive_parser->parseFile(__DIR__."/lib/bootstrap/less/responsive.less"); //, true);
+	try {
+		$bootstrapLess =  $bootstrap_parser->parseFile(__DIR__."/lib/bootstrap/less/bootstrap.less"); //, true);
+		$responsiveLess =  $responsive_parser->parseFile(__DIR__."/lib/bootstrap/less/responsive.less"); //, true);
+	} catch (Exception $e) {
+		add_settings_error('error', 'settings_updated', __('Unable to parse stylesheets. Message returned was: ').$e->getMessage(), 'error');
+		set_transient('settings_errors', get_settings_errors(), 30);
+		wp_redirect("{$_SERVER['PHP_SELF']}?page=wordstrap-options&tab=stylesheet&settings-updated=true");
+		exit;
+	}
 
 	//parse the variables from the database.
 	$wordstrap_options = get_option("theme_wordstrap_options");

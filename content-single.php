@@ -5,7 +5,7 @@
 		<?php echo get_post_meta($post->ID, "wordstrap_hero_area_text", true); ?>
 	</div>
 	<div class="row">
-		<div class="post-meta span12">	
+		<div class="post-meta <?php wordstrap_main_content_span(); ?>">	
 			<p><?php echo __("Posted in"); ?> <?php the_category(", "); ?></p>
 		</div>
 	</div>
@@ -14,22 +14,56 @@
 
 <article class="row" id="post-<?php the_ID(); ?>">
 	<?php if(!has_post_thumbnail()): ?>	
-		<header>
-			<div class="span12">
-				<h2><?php the_title(); ?></h2> 
-				<p><?php echo __("Posted in"); ?> <?php the_category(", "); ?></p>
-			</div>
-		</header>
+	                                   	<header>
+	                                   		<div class="<?php wordstrap_main_content_span(); ?>">
+	                                   			<h2><?php the_title(); ?></h2> 
+	                                   			<!-- show the author, date and comment count -->
+	                                   			<div class="btn-group">
+	                                   				<a href="<?php echo get_author_posts_url(get_the_author_meta( 'ID' )); ?>" title="<?php the_author_meta('display_name'); ?>" class="btn btn-small" rel="author"><i class="icon-user"></i> <?php the_author_meta('display_name'); ?></a>
+	                                   				<a class="btn btn-small"><i class="icon-time"></i> <?php the_date(); ?></a>
+	                                   				<a href="<?php comments_link() ?>" class="btn btn-small"><i class="icon-comment"></i> <?php comments_number("0", "1", "%"); ?></a>
+	                                   			</div>
+	                                   		</div>
+	                                   	</header>
 	<?php endif; ?>
 
-	<div class="span12 post-contents">
+	<div class="post-contents <?php wordstrap_main_content_span(); ?>">
 		<?php the_content(); ?>
 	</div>
 
 	<footer>
-		<div class="span12">
-			<p><?php echo __("Posted by"); ?> <a href="<?php echo get_author_posts_url(get_the_author_meta( 'ID' )); ?>" title="<?php the_author_meta('display_name'); ?>"><?php the_author_meta('display_name'); ?></a></p>
-			<p><?php the_tags("Tagged with: "); ?></p>
+		<div class="<?php wordstrap_main_content_span(); ?>">
+				
+		
+				<!-- show the categories -->
+				<p>
+				<div class="btn-group">
+					<?php $categories = get_the_category(); ?>
+					<?php if($categories) : ?>
+					<a class="btn btn-small">
+						<i class="icon-folder-open"></i> 
+						<?php echo (count($categories) > 1 ? __("Categories") : __("Category")); ?>:
+					</a>
+					<?php foreach($categories as $category) : ?>
+					<a class="btn btn-small" href="<?php echo get_category_link($category->term_id); ?>">
+						<?php echo $category->cat_name; ?>
+					</a>
+					<?php endforeach; ?>
+					<?php endif; ?>
+				</div>
+				</p>
+	
+				<!-- show the tags -->
+				<p>
+				<div class="btn-group">
+					<a class="btn btn-small"><i class="icon-tags"></i> <?php echo __("Tags"); ?>:</a>
+					<?php if(get_the_tags()): foreach(get_the_tags() as $tag) :?>
+					<a class="btn btn-small" href="<?php echo get_tag_link($tag->term_id); ?>"><?php echo $tag->name; ?></a>
+					<?php endforeach; else : ?>
+					<a class="btn disabled"><?php echo __("no tags"); ?></a>
+					<?php endif; ?>
+				</div>
+				</p>
 		</div>
 	</footer>
 	
