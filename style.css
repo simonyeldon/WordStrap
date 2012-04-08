@@ -19,3 +19,8 @@ body.admin-bar .navbar-fixed-top {
 		padding-top: 0!important;
 	}
 }
+
+.wordstrap-featured-image {
+	background-repeat: no-repeat;
+	background-position: 50% 0;
+}

@@ -3,6 +3,7 @@ require_once "lib/walker.class.php";
 require_once "lib/settings.php";
 require_once "lib/metabox.class.php";
 require_once "lib/widgets.php";
+require_once "lib/scripts.php";
 
 function wordstrap_register_menus() {
 	register_nav_menus(
@@ -64,6 +65,8 @@ function wordstrap_main_content_span($echo = true) {
 		return $echo;
 	}
 }
+
+
 function wordstrap_compile_stylesheets() {
 	$css_folder = __DIR__."/lib/bootstrap/css";
 
