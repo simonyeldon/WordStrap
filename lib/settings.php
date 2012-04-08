@@ -44,6 +44,8 @@ add_action("admin_init", "wordstrap_register_settings");
 
 function wordstrap_js_libs() {
     wp_enqueue_script('tiny_mce');
+    wp_enqueue_script('farbtastic');
+    wp_enqueue_style('farbtastic');
 }
 add_action("admin_print_scripts", "wordstrap_js_libs");
 
@@ -229,9 +231,20 @@ function wordstrap_setting_stylesheet_compile() { ?>
 
 function wordstrap_setting_stylesheet_bootstrap_text($args) {
     $wordstrap_options = get_option( 'theme_wordstrap_options' );
+    if( in_array($args['bootstrap_setting'], wordstrap_get_bootstrap_colour_settings()) ) {
+	$colour = true;
+    } 
     ?>
+    <?php if($colour): ?>
+	<div class="bootstrap_colour">
+		<div class="colourpicker"></div>
+    <?php endif; ?>
     <input type="text" value="<?php echo $wordstrap_options['bootstrap'][$args['bootstrap_setting']]; ?>" name="theme_wordstrap_options[bootstrap][<?php echo $args['bootstrap_setting']; ?>]" >
-<?php }
+     <?php if($colour): ?>
+	</div>
+     <?php endif; ?>
+    <?php 
+}
 /*
  * Validate the user input
  */
@@ -409,6 +422,34 @@ function wordstrap_get_settings_bootstrap_defaults() {
 		'infoBackground' => "#d9edf7"
 	);
 	return $bootstrap;
+}
+function wordstrap_get_bootstrap_colour_settings() {
+	$bootstrap_colours = array(
+		"infoBackground",
+		"infoText",
+		"successBackground",
+		"successText",
+		"errorBackground",
+		"errorText",
+		"warningBackground",
+		"warningText",
+		"navbarLinkColorHover",
+		"navbarBackground",
+		"navbarBackgroundHighlight",
+		"navbarText",
+		"placeholderText",
+		"primaryButtonColor",
+		"linkColor",
+		"linkColorHover",
+		"blue",
+		"green",
+		"red",
+		"yellow",
+		"orange",
+		"pink",
+		"purple"
+	);
+	return $bootstrap_colours;
 }
 /*
  * Add to the admin menu interface

@@ -6,6 +6,7 @@ Clone the repository into your themes folder of your WordPress installation usin
 
 ## Requirements
 PHP 5.3
+Wordpress 3.3
 
 ```sh
 git clone https://github.com/simonyeldon/WordStrap.git wordstrap
