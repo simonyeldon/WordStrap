@@ -24,6 +24,8 @@ class wordstrap_meta_box {
 			'normal',
 			'high'
 		);
+		wp_enqueue_script("farbtastic");
+		wp_enqueue_style("farbtastic");
 	} 
 
 	public function save( $post_id ) {
@@ -50,20 +52,27 @@ class wordstrap_meta_box {
 			add_post_meta( $post_id, 'wordstrap_hero_area_text', wp_kses( $_POST['wordstrap_hero_area_text'], $allowed ), true );
 		}
 
+
 		
 	}
 
 	public function render_hero_area_text_meta_box($post) {
-	 // Use nonce for verification
-	  wp_nonce_field( 'wordstrap_hero_area_text_nonce', 'wordstrap_hero_area_text_nonce' );
+		// Use nonce for verification
+		wp_nonce_field( 'wordstrap_hero_area_text_nonce', 'wordstrap_hero_area_text_nonce' );
 
 		//load the post meta
-		$value = get_post_meta($post->ID, "wordstrap_hero_area_text", true);
+		$values = get_post_custom($post->ID);
 
-	  // The actual fields for data entry
-//	  echo '<label for="wordstrap_hero_area_text">';
-//	  echo '</label> ';
-//	  echo '<textarea id="wordstrap_hero_area_text" name="wordstrap_hero_area_text">'.$value.'</textarea>';
-		wp_editor( $value, "wordstrap_hero_area_text", array( "teeny" => true, "media_buttons" => false ) );
+		//colour field
+		?>
+		<div class="colourpicker">
+			<div class="colour"></div>
+			<input name="wordstrap_hero_area_colour" id="wordstrap_hero_area_colour" placeholder="Colour" value="<?php echo $values["wordstrap_hero_area_colour"][0]; ?>" />
+		</div>
+
+		<?php
+
+		// The actual fields for data entry
+		wp_editor( $values["wordstrap_hero_area_text"][0], "wordstrap_hero_area_text", array( "teeny" => true, "media_buttons" => false, "textarea_rows" => 4 ) );
 	}
 }
