@@ -249,10 +249,10 @@ function wordstrap_setting_stylesheet_bootstrap_text($args) {
     } 
     ?>
     <?php if($colour): ?>
-	<div class="bootstrap_colour">
+	<div class="colourpicker-wrapper">
 		<div class="colourpicker"></div>
     <?php endif; ?>
-    <input type="text" value="<?php echo $wordstrap_options['bootstrap'][$args['bootstrap_setting']]; ?>" name="theme_wordstrap_options[bootstrap][<?php echo $args['bootstrap_setting']; ?>]" >
+    <input type="text" <?php if($colour) {echo 'class="colour" ';} ?> value="<?php echo $wordstrap_options['bootstrap'][$args['bootstrap_setting']]; ?>" name="theme_wordstrap_options[bootstrap][<?php echo $args['bootstrap_setting']; ?>]" >
      <?php if($colour): ?>
 	</div>
      <?php endif; ?>

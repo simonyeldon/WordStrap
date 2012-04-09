@@ -19,7 +19,6 @@
 		<link rel="stylesheet/less" href="<?php bloginfo('template_directory'); ?>/less/style.less">
 		<link rel="stylesheet" type="text/css" href="<?php bloginfo('stylesheet_url'); ?>">
 
-		<?php wp_enqueue_script("jquery"); ?>
 		<?php if( ( is_single() || is_page() ) && has_post_thumbnail() ): ?>
 			<?php 
 				$thumbnail = array( 
@@ -29,11 +28,17 @@
 					"small" => wp_get_attachment_image_src( get_post_thumbnail_id(), array(440, 9999)),
 					"normal" => wp_get_attachment_image_src( get_post_thumbnail_id(), array(852, 9999)),
 				);
+				$header_colour = get_post_meta($post->ID, "wordstrap_hero_area_colour", true);  
 			?>
 			<style>
 				.wordstrap-featured-image {
 					background-image: url(<?php echo $thumbnail['normal'][0]; ?>);
 				}
+				<?php if($header_colour) : ?>
+				.hero-unit, .hero-unit h1, .hero-unit p {
+					color: <?php echo $header_colour; ?>;
+				}
+				<?php endif; ?>
 				<?php if($wordstrap_options['responsive']): ?>
 				@media (max-width: 480px) {
 					.wordstrap-featured-image {

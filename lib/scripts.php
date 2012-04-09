@@ -5,6 +5,15 @@
  * This file handles the javascript files for Wordstrap
  */
 
+function wordstrap_admin_enqueue_scripts() {
+
+	wp_register_script("wordstrap-farbtastic", get_template_directory_uri()."/js/wordstrap-farbtastic.js");
+	wp_enqueue_script("wordstrap-farbtastic");
+
+}
+add_action("admin_enqueue_scripts", "wordstrap_admin_enqueue_scripts");
+
+
 function wordstrap_enqueue_scripts() {
 	wp_register_script("bootstrap-transition", get_template_directory_uri()."/lib/bootstrap/js/bootstrap-transition.js", array(), false, true);
 	wp_register_script("bootstrap-alert", get_template_directory_uri()."/lib/bootstrap/js/bootstrap-alert.js", array(), false, true);
@@ -18,7 +27,7 @@ function wordstrap_enqueue_scripts() {
 	wp_register_script("bootstrap-collapse", get_template_directory_uri()."/lib/bootstrap/js/bootstrap-collapse.js", array(), false, true);
 	wp_register_script("bootstrap-carousel", get_template_directory_uri()."/lib/bootstrap/js/bootstrap-carousel.js", array(), false, true);
 	wp_register_script("bootstrap-typeahead", get_template_directory_uri()."/lib/bootstrap/js/bootstrap-typeahead.js", array(), false, true);
-
+	
 	$wordstrap_options = get_option("theme_wordstrap_options");
 
 	wp_enqueue_script("jquery");
