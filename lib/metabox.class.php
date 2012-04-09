@@ -49,11 +49,11 @@ class wordstrap_meta_box {
 			'p' => array()
 		);
 		if( isset( $_POST['wordstrap_hero_area_text'] ) ) {
-			add_post_meta( $post_id, 'wordstrap_hero_area_text', wp_kses( $_POST['wordstrap_hero_area_text'], $allowed ), true );
+			$safe = wp_kses( $_POST['wordstrap_hero_area_text'], $allowed );
+			if( !update_post_meta( $post_id, 'wordstrap_hero_area_text', $safe) ) {
+				add_post_meta( $post_id, 'wordstrap_hero_area_text', $safe, true );
+			}
 		}
-
-
-		
 	}
 
 	public function render_hero_area_text_meta_box($post) {
@@ -72,7 +72,16 @@ class wordstrap_meta_box {
 
 		<?php
 
-		// The actual fields for data entry
-		wp_editor( $values["wordstrap_hero_area_text"][0], "wordstrap_hero_area_text", array( "teeny" => true, "media_buttons" => false, "textarea_rows" => 4 ) );
+		$tinyMCE_settings = array(
+			"teeny" => true,
+			"media_buttons" => false,
+			"wpautop" => true,
+			"textarea_rows" => 5,
+			"quicktags" => array(
+				"buttons" => "em,strong,link"
+			),
+			"tinymce" => false
+		);
+		wp_editor( $value, "wordstrap_hero_area_text", $tinyMCE_settings );
 	}
 }
