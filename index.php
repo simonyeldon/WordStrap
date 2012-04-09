@@ -5,7 +5,7 @@
 		<div class="row">
 
 		<?php if(is_active_sidebar("wordstrap_sidebar_left")) : ?>	
-			<div class="span3">
+			<div class="<?php wordstrap_sidebar_widgets_span(); ?>">
 				<?php dynamic_sidebar("wordstrap_sidebar_left"); ?>
 			</div>
 		<?php endif; ?>
@@ -37,7 +37,7 @@
 			</div> <!-- /main content area -->
 
 		<?php if(is_active_sidebar("wordstrap_sidebar_right")) : ?>	
-			<div class="span3">
+			<div class="<?php wordstrap_sidebar_widgets_span(); ?>">
 			<?php dynamic_sidebar("wordstrap_sidebar_right"); ?>
 			</div>
 		<?php endif; ?>

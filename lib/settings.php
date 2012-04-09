@@ -58,6 +58,7 @@ function wordstrap_register_settings_general()
 
     add_settings_field("wordstrap_setting_footer_text", "Footer text", "wordstrap_setting_footer_text", "wordstrap", "wordstrap_settings_genearl_footer");
     add_settings_field("wordstrap_setting_general_responsive_text", "Responsive layout", "wordstrap_setting_general_responsive_text", "wordstrap", "wordstrap_settings_genearl_footer");
+    add_settings_field("wordstrap_setting_general_sidebar_width", "Sidebar width", "wordstrap_setting_general_sidebar_width", "wordstrap", "wordstrap_settings_genearl_footer");
 }
 
 /*
@@ -151,10 +152,22 @@ function wordstrap_setting_footer_text() {
     );
      $wordstrap_options = get_option( 'theme_wordstrap_options' );
      ?>
-     <textarea class="wordstrap_tinymce" id="footer_text" name="theme_wordstrap_options[footer_text]" style="width: 100%; height: 100px;"><?php echo $wordstrap_options['footer_text']; ?></textarea>
+	<?php wp_editor( $wordstrap_options['footer_text'], "theme_wordstrap_options[footer_text]", array( "teeny" => true, "media_buttons" => false, "wpautop" => true, "textarea_rows" => 4 ) ); ?>
      <span class="description">Enter the text you wish to appear in the footer of your site</span>
 <?php }
 
+/*
+ * Sidebar width
+ */
+function wordstrap_setting_general_sidebar_width() {
+
+	$wordstrap_options = get_option( 'theme_wordstrap_options' );
+	?>
+	<label><input type="radio" name="theme_wordstrap_options[sidebar_width]" value="2" <?php checked( $wordstrap_options['sidebar_width'], 2); ?> /> 2</label><br />
+	<label><input type="radio" name="theme_wordstrap_options[sidebar_width]" value="3" <?php checked( $wordstrap_options['sidebar_width'], 3); ?> /> 3</label><br />
+	<label><input type="radio" name="theme_wordstrap_options[sidebar_width]" value="4" <?php checked( $wordstrap_options['sidebar_width'], 4); ?> /> 4</label>
+	<?php
+}
 
 /*=================================*
  * MENU TAB FIELDS                 *
@@ -263,6 +276,7 @@ function wordstrap_options_validate($input) {
     if ($submit_general) {
         $valid_input['responsive'] = ( $input['responsive'] ? "1" : "0" );
         $valid_input['footer_text'] = wp_kses_post($input['footer_text']); //allow some HTML
+	$valid_input['sidebar_width'] = ( in_array($input['sidebar_width'], array(2,3,4))  ? $input['sidebar_width'] : 2);
     } elseif ($submit_menu) {
         $valid_input['menu']['type'] = ( "fixed" === $input['menu']['type'] ? "fixed" : "static" );
         $valid_input['menu']['branding'] = ( "1" === $input['menu']['branding'] ? "1" : "0" );
@@ -329,6 +343,7 @@ function wordstrap_get_default_options() {
         ),
         'footer_text' => 'Theme created by <a href="http://ghosty.co.uk">Ghosty</a>, styling by Bootsrap',
         'responsive' => 1,
+	'sidebar_width'=> 2,
         'js' => wordstrap_get_settings_javascript_files(),
 	'bootstrap' => wordstrap_get_settings_bootstrap_defaults()
     );
