@@ -48,25 +48,6 @@ function wordstrap_body_classes( $classes ) {
 }
 add_filter( 'body_class', 'wordstrap_body_classes' );
 
-function wordstrap_main_content_span($echo = true) {
-	$span = 12;
-	if(is_active_sidebar("wordstrap_sidebar_left")) {
-		$span -= 3;
-	}
-	if(is_active_sidebar("wordstrap_sidebar_right")) {
-		$span -= 3;
-	}
-
-	$span = "span".$span;
-	
-	if($echo) {
-		echo $span;
-	} else {
-		return $echo;
-	}
-}
-
-
 function wordstrap_compile_stylesheets() {
 	$css_folder = __DIR__."/lib/bootstrap/css";
 

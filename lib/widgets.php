@@ -52,6 +52,34 @@ register_sidebar(array(
 	'after_title' => "</h4>",
 ));
 
+function wordstrap_main_content_span($echo = true) {
+	$span = 12;
+	$wordstrap_options = get_option("theme_wordstrap_options");
+	if(is_active_sidebar("wordstrap_sidebar_left")) {
+		$span -= $wordstrap_options['sidebar_width'];
+	}
+	if(is_active_sidebar("wordstrap_sidebar_right")) {
+		$span -= $wordstrap_options['sidebar_width'];
+	}
+
+	$span = "span".$span;
+	
+	if($echo) {
+		echo $span;
+	} else {
+		return $echo;
+	}
+}
+
+function wordstrap_sidebar_widgets_span($echo = true) {
+	$wordstrap_options = get_option("theme_wordstrap_options");
+	if($echo) {
+		echo "span".$wordstrap_options['sidebar_width'];
+	} else {
+		return "span".$wordstrap_options['sidebar_width'];
+	}
+}
+
 function wordstrap_footer_widgets_span($echo = true) {
 	$span = 12;
 	$widgets = 0;
