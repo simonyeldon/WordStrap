@@ -24,10 +24,14 @@ if( is_admin() ) {
 
 function wordstrap_after_setup_theme() {
 	add_theme_support( 'post-thumbnails' );
+
+	//register the thumbnails we want created on upload.
 	add_image_size( 'hero-unit-xlarge', 1170, 9999 );
 	add_image_size( 'hero-unit-large', 940, 9999 );
 	add_image_size( 'hero-unit-medium', 724, 9999 );
 	add_image_size( 'hero-unit-small', 360, 9999 );
+
+	add_editor_style( 'editor-style.css' );
 }
 add_action( 'after_setup_theme', 'wordstrap_after_setup_theme' );
 
